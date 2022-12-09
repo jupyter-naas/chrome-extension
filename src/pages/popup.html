@@ -1,38 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Naas</title>
-    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css">
-</head>
+    <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" />
+    <script src="/bootstrap/bootstrap.bundle.min.js"></script>
+  </head>
 
-<body style="width: 350px;" class="my-2">
-    <div class="my-2 justify-content-center d-flex align-items-center">
-        <img src="/images/logo.png" class="rounded" width="50">
+  <body style="width: 400px" class="p-2">
+    <header class="justify-content-center d-none align-items-center">
+      <img src="/images/logo.png" class="rounded" width="50" />
+    </header>
+
+    <!-- notifications -->
+    <div id="notifications">
+      <!-- <div class="alert alert-dismissible alert-danger">
+        <span class="">hi</span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div> -->
     </div>
-    <div class="alert alert-info mx-2 text-center" id="mainAlert">
-        <div class="spinner-border" role="status"></div>
-    </div>
 
-    <form class="px-2 visually-hidden" id="activationForm">
-        <label for="naasToken" class="text-secondary">Naas Token</label>
-        <input type="text" required id="naasToken" class="form-control my-1" placeholder="Enter your Naas Token">
-
-        <button type="submit" class="btn btn-primary mt-2">Confirm</button>
-
-        <p class="text-secondary mt-2 p-1 text-center">
-            <small>
-                By using this extension, you agree to our terms of service, and privacy policy.
-            </small>
-        </p>
+    <form id="naasTokenForm" class="d-flex visually-hidden">
+      <input
+        type="text"
+        name="token"
+        minlength="20"
+        required
+        class="form-control"
+        placeholder="Naas Token"
+      />
+      <button type="submit" name="submitBtn" class="btn btn-primary">
+        Save
+      </button>
     </form>
 
+    <table class="table align-middle">
+      <!-- connections -->
+      <tr id="connections" class="p-1">
+        <td class="m-0 text-secondary">Connections</td>
+        <td>
+          <ul class="list-unstyled m-0">
+            <li class="d-flex justify-content-between align-items-center">
+              <div>LinkedIn</div>
+              <div
+                class="bg-success p-1 rounded-circle"
+                style="width: 20px; height: 20px"
+              ></div>
+            </li>
 
+            <li class="d-flex justify-content-between align-items-center">
+              <div>
+                <a
+                  href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
+                  target="_blank"
+                  >Request new connections</a
+                >
+              </div>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <!-- jobs -->
+      <tr id="jobs" class="p-1">
+        <td class="m-0 text-secondary">Jobs</td>
+        <td>
+          <form id="jobsForm">
+            <select name="jobName" required class="form-select">
+              <!-- <option value="">Choose your job</option> -->
+            </select>
+
+            <textarea
+              name="payload"
+              class="form-control mt-1"
+              placeholder="payload"
+            ></textarea>
+
+            <button type="submit" class="btn btn-sm btn-primary mt-1">
+              Run
+            </button>
+          </form>
+        </td>
+      </tr>
+
+      <!-- Admin -->
+      <tr id="admin" class="p-1">
+        <td class="m-0 text-secondary">Administration</td>
+        <td>
+          <ul class="list-unstyled m-0">
+            <!-- <li class="d-flex justify-content-between align-items-center"> -->
+            <div><a href="option.html">Options</a></div>
+            <div>
+              <a
+                href="https://github.com/jupyter-naas/naas-chrome-extension"
+                target="_blank"
+                >Developer's Page</a
+              >
+            </div>
+            <div>
+              <a
+                href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
+                target="_blank"
+                >Report issue</a
+              >
+            </div>
+            <div>
+              <a
+                href="https://github.com/jupyter-naas/naas-chrome-extension"
+                target="_blank"
+                >Sponsor us</a
+              >
+            </div>
+            <!-- </li> -->
+          </ul>
+        </td>
+      </tr>
+    </table>
 
     <script src="popup.js"></script>
-</body>
-
+  </body>
 </html>

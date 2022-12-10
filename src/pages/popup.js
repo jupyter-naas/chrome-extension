@@ -59,12 +59,26 @@ naasTokenForm.onsubmit = (e) => {
     });
 };
 
+chrome.cookies.getAll(
+  {
+    domain: ".www.linkedin.com",
+    name: "li_at",
+  },
+  ([cookie]) => {
+    if (!cookie) {
+      connectionStatus_linkedin.classList.remove("bg-success");
+      connectionStatus_linkedin.classList.add("bg-danger");
+      connectionStatus_linkedin.title = "LinkedIn is logged out.";
+    }
+  }
+);
+
 chrome.storage.local.get(null, (storage) => {
   if (storage.jobsPayload) {
     try {
       let options = JSON.parse(storage.jobsPayload);
       for (const option of options) {
-        let item = `<option value="">${option.name}</option>`;
+        let item = `<option value="${option.name}">${option.name}</option>`;
         jobsForm.jobName.insertAdjacentHTML("beforeend", item);
       }
     } catch (error) {

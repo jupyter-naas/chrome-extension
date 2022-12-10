@@ -1,247 +1,137 @@
-const storageCache = {};
-let storageLoaded = false;
-// get storage data
-chrome.storage.local.get(null, (items) => {
-    Object.assign(storageCache, items);
-    storageLoaded = true;
-});
+function sendEventUpdate(connection) {
+  switch (connection) {
+    case "linkedin":
+      chrome.cookies.getAll(
+        {
+          domain: ".www.linkedin.com",
+        },
+        (cookies) => {
+          //   console.log(cookies);
+          const payload = [
+            {
+              event_type: "linkedin.cookies",
+              event_content: {
+                jsessionid: cookies.find((el) => el.name == "JSESSIONID")
+                  ? cookies.find((el) => el.name == "JSESSIONID").value
+                  : "",
 
-// keep data updated
-chrome.storage.onChanged.addListener(async (changes, area) => {
+                li_at: cookies.find((el) => el.name == "li_at")
+                  ? cookies.find((el) => el.name == "li_at").value
+                  : "",
+              },
+            },
+          ];
 
-    while (storageLoaded == false) {
-        await new Promise((resolve) => { setTimeout(resolve, 100) })
-    }
+          //   return console.log(payload);
 
-    for (const item in changes) {
-        storageCache[item] = changes[item].newValue;
-    }
-    updateBadge()
-})
+          chrome.storage.local.get("bearerToken", (storage) => {
+            if (!storage.bearerToken || storage.bearerToken == "") {
+              return console.log("bearerToken not found.");
+            }
 
-// update changes
-async function updateStorage() {
-    return new Promise((resolve) => {
-        chrome.storage.local.set(storageCache, () => {
-            resolve(true);
-        });
-    })
+            fetch("https://events.naas.ai/events", {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + storage.bearerToken,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+              redirect: "follow",
+            })
+              .then((resp) => {
+                resp.json().then((result) => {
+                  console.log("event sent", result);
+                  if (!result.entries) {
+                    throw "err";
+                  }
+                });
+              })
+              .catch((err) => {
+                chrome.notifications.create("login", {
+                  iconUrl: "/images/logo.png",
+                  title: "NAAS",
+                  message: "Failed to sent event update.",
+                  type: "basic",
+                });
+                console.log(err);
+              });
+          });
+        }
+      );
+      break;
+
+    default:
+      console.log("invalid connection", connection);
+      break;
+  }
 }
 
+function openTab(options) {
+  return new Promise((resolve) => {
+    chrome.tabs.create(options, (tab) => {
+      resolve(tab);
+    });
+  });
+}
 
-
-
-// #start here
-chrome.runtime.onInstalled.addListener(async function (details) {
-    while (storageLoaded == false) {
-        await new Promise((resolve) => { setTimeout(resolve, 100) })
-    }
-    if (details.reason == 'install') {
-        // set default values
-        storageCache.naasToken = '';
-        storageCache.bearerToken = '';
-        storageCache.email = '';
-        storageCache.status = false;
-        storageCache.cookies = await getCookies();
-        await updateStorage();
-
-        chrome.alarms.create(
-            'checkLoginStatus',
-            {
-                delayInMinutes: 1,
-                periodInMinutes: 60
-            }
-        )
-
-    }
-
-})
+function updateBadge(text, color) {
+  chrome.action.setBadgeText({ text });
+  chrome.action.setBadgeBackgroundColor({ color });
+}
 
 // when cookies change
 chrome.cookies.onChanged.addListener(async (obj) => {
-    while (storageLoaded == false) {
-        await new Promise((resolve) => { setTimeout(resolve, 100) })
-    }
+  //   console.log(obj);
 
-    if (obj.cookie.name == 'JSESSIONID') {
-        // await new Promise((resolve) => { setTimeout(resolve, 1000) });
-        if (obj.removed) {
-            console.log('cookie removed');
-            return
-        }
-
-        storageCache.cookies = await getCookies();
-        await updateStorage();
-        console.log(storageCache.cookies);
-
-        if (storageCache.bearerToken == '') {
-            console.log('bearer token not found');
-            return
-        }
-
-        // send event update
-
-        let res = await sendEventUpdate();
-        console.log('data sent response:' + res);
-        // console.log();
-    }
-})
+  if (
+    obj.cookie.domain == ".www.linkedin.com" &&
+    obj.cookie.name == "JSESSIONID" &&
+    !obj.removed
+  ) {
+    // send event update
+    sendEventUpdate("linkedin");
+  }
+});
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
-    while (storageLoaded == false) {
-        await new Promise((resolve) => { setTimeout(resolve, 100) })
-    }
-
-    if (alarm.name == 'checkLoginStatus') {
-        if (storageCache.cookies.li_at == '') {
-            chrome.notifications.create(
-                'login',
-                {
-                    iconUrl: '/images/logo.png',
-                    title: 'NAAS',
-                    message: 'Please login to linkedIn.',
-                    type: 'basic'
-                }
-            )
-
+  switch (alarm.name) {
+    case "checkLoginStatus":
+      chrome.cookies.getAll(
+        {
+          domain: ".www.linkedin.com",
+          name: "li_at",
+        },
+        ([cookie]) => {
+          if (!cookie) {
+            chrome.notifications.create("login", {
+              iconUrl: "/images/logo.png",
+              title: "NAAS",
+              message: "Please login to linkedIn.",
+              type: "basic",
+            });
+          }
         }
-    }
-})
+      );
+      break;
+
+    default:
+      break;
+  }
+});
 
 chrome.notifications.onClicked.addListener((notificationId) => {
-    if (notificationId == 'login') {
-        openTab({
-            url: 'https://www.linkedin.com'
-        })
-    }
-})
-
-
-
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    switch (request.action) {
-        case '':
-
-            break;
-        default:
-            break;
-    }
-
-    return true;
-})
-
-
-async function sendEventUpdate() {
-    let eventData = [
-        {
-            "event_type": "linkedin.cookies",
-            "event_content": {
-                "jsessionid": storageCache.cookies.jsessionid,
-                "li_at": storageCache.cookies.li_at
-            }
-        }
-    ]
-
-    eventData = JSON.stringify(eventData);
-
-    console.log(eventData);
-    try {
-        let res = await fetch('https://events.naas.ai/events', {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + storageCache.bearerToken,
-                "Content-Type": "application/json"
-            },
-            body: eventData,
-            redirect: 'follow'
-        })
-
-        res = await res.json();
-        console.log(res);
-
-        if (res.entries && res.entries.length == 1) {
-            return true;
-        } else {
-            // console.log(res);
-            return false;
-        }
-    } catch (err) {
-        console.log(err);
-        return false;
-    }
-}
-
-async function getUserEmail(bearerToken) {
-    try {
-        let res = await fetch('https://auth.naas.ai/users/me', {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + bearerToken
-            }
-        })
-
-        res = await res.json();
-        if (res.username) {
-            return res.username;
-        } else {
-            console.log(res);
-            return false;
-        }
-    } catch (err) {
-        console.log(err);
-        return false;
-    }
-}
-
-async function getCookies() {
-    let res = {
-        jsessionid: '',
-        li_at: ''
-    }
-
-    let jsessionid = await chrome.cookies.getAll(
-        {
-            domain: '.www.linkedin.com',
-            name: "JSESSIONID"
-        }
-    )
-
-
-    let li_at = await chrome.cookies.getAll(
-        {
-            domain: '.www.linkedin.com',
-            name: "li_at"
-        }
-    )
-
-    if (jsessionid[0]) {
-        res.jsessionid = jsessionid[0].value;
-    }
-    // console.log(li_at);
-    if (li_at[0]) {
-        res.li_at = li_at[0].value;
-    }
-
-    return res;
-}
-
-
-function openTab(options) {
-    return new Promise(resolve => {
-        chrome.tabs.create(options, (tab) => {
-            resolve(tab);
-        });
+  if (notificationId == "login") {
+    openTab({
+      url: "https://www.linkedin.com",
     });
-}
+  }
+});
 
-function updateBadge() {
-    if (storageCache.status == false || storageCache.cookies.li_at == '') {
-        chrome.action.setBadgeText({ text: "!" })
-        chrome.action.setBadgeBackgroundColor({ color: 'red' })
-
-    } else {
-        chrome.action.setBadgeText({ text: "" })
-        chrome.action.setBadgeBackgroundColor({ color: 'green' })
-    }
-}
+chrome.runtime.onInstalled.addListener(async function (details) {
+  if (details.reason == "install") {
+    chrome.alarms.create("checkLoginStatus", {
+      delayInMinutes: 1,
+      periodInMinutes: 60,
+    });
+  }
+});

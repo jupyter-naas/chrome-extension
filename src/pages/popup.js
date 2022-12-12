@@ -39,6 +39,21 @@ async function getBearerToken(naasToken) {
   });
 }
 
+function checkConnections() {
+  chrome.cookies.getAll(
+    {
+      domain: ".www.linkedin.com",
+      name: "li_at",
+    },
+    ([cookie]) => {
+      if (cookie) {
+        connectionStatus_linkedin.classList.add("bg-success");
+        connectionStatus_linkedin.classList.remove("bg-danger");
+      }
+    }
+  );
+}
+
 naasTokenForm.onsubmit = (e) => {
   e.preventDefault();
   naasTokenForm.submitBtn.innerText = "Saving...";
@@ -48,6 +63,7 @@ naasTokenForm.onsubmit = (e) => {
         notificationsWrapper.innerHTML = "";
         addNotification("Naas token set successfully!", "alert-success");
         naasTokenForm.classList.add("visually-hidden");
+        checkConnections();
       });
       console.log(resp);
     })
@@ -58,20 +74,6 @@ naasTokenForm.onsubmit = (e) => {
       naasTokenForm.submitBtn.innerText = "Save";
     });
 };
-
-chrome.cookies.getAll(
-  {
-    domain: ".www.linkedin.com",
-    name: "li_at",
-  },
-  ([cookie]) => {
-    if (!cookie) {
-      connectionStatus_linkedin.classList.remove("bg-success");
-      connectionStatus_linkedin.classList.add("bg-danger");
-      connectionStatus_linkedin.title = "LinkedIn is logged out.";
-    }
-  }
-);
 
 chrome.storage.local.get(null, (storage) => {
   if (storage.jobsPayload) {
@@ -86,8 +88,10 @@ chrome.storage.local.get(null, (storage) => {
     }
   }
 
-  if (!storage.bearerToken) {
+  if (!storage.bearerToken || storage.bearerToken == "") {
     addNotification("Please set your naas token.", "alert-warning");
     naasTokenForm.classList.remove("visually-hidden");
+  } else {
+    checkConnections();
   }
 });

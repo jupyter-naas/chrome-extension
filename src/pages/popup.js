@@ -54,6 +54,57 @@ function checkConnections() {
   );
 }
 
+function setupJobsSections(jobsPayload) {
+  try {
+    let options = JSON.parse(jobsPayload);
+    for (let i = 0; i < options.length; i++) {
+      const option = options[i];
+      let item = `<option value="${i}">${option.name}</option>`;
+      jobsForm.jobName.insertAdjacentHTML("beforeend", item);
+    }
+
+    jobsForm.onsubmit = (e) => {
+      e.preventDefault();
+
+      const job = options[+jobsForm.jobName.value];
+
+      jobsForm.submitBtn.value = "Running";
+      jobsForm.submitBtn.classList.add("disabled");
+
+      const payload = job?.action?.payload?.replace(
+        "%s",
+        jobsForm.payload.value
+      );
+
+      fetch(job?.action?.url, {
+        method: "POST",
+        payload: payload,
+      })
+        .then((resp) => {
+          if (resp.status == 200) {
+            addNotification(
+              `${job.name} is started successfully.`,
+              "alert-success"
+            );
+          } else {
+            throw `Error ${resp.status} received from API.`;
+          }
+        })
+        .catch((err) => {
+          addNotification(err, "alert-danger");
+        })
+        .finally(() => {
+          jobsForm.reset();
+          jobsForm.submitBtn.value = "Run";
+          jobsForm.submitBtn.classList.remove("disabled");
+        });
+    };
+  } catch (error) {
+    addNotification(error, "alert-danger");
+    console.log(error);
+  }
+}
+
 naasTokenForm.onsubmit = (e) => {
   e.preventDefault();
   naasTokenForm.submitBtn.innerText = "Saving...";
@@ -77,15 +128,7 @@ naasTokenForm.onsubmit = (e) => {
 
 chrome.storage.local.get(null, (storage) => {
   if (storage.jobsPayload) {
-    try {
-      let options = JSON.parse(storage.jobsPayload);
-      for (const option of options) {
-        let item = `<option value="${option.name}">${option.name}</option>`;
-        jobsForm.jobName.insertAdjacentHTML("beforeend", item);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    setupJobsSections(storage.jobsPayload);
   }
 
   if (!storage.bearerToken || storage.bearerToken == "") {

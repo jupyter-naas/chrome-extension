@@ -30,7 +30,7 @@ payloadForm.onsubmit = (e) => {
     }
 
     chrome.storage.local.set({ jobsPayload: payloadForm.payload.value }, () => {
-      addNotification("Saved successfully!");
+      addNotification("Saved successfully!", "alert-success");
     });
   } catch (err) {
     addNotification(err, "alert-danger");

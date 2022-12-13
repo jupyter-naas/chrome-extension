@@ -9,7 +9,7 @@
     <script src="/bootstrap/bootstrap.bundle.min.js"></script>
   </head>
 
-  <body style="width: 400px" class="p-2">
+  <body style="width: 400px" class="p-2 bg-dark text-white">
     <header class="justify-content-center d-none align-items-center">
       <img src="/images/logo.png" class="rounded" width="50" />
     </header>
@@ -35,17 +35,17 @@
         class="form-control"
         placeholder="Naas Token"
       />
-      <button type="submit" name="submitBtn" class="btn btn-primary">
+      <button type="submit" name="submitBtn" class="btn btn-success">
         Save
       </button>
     </form>
 
-    <table class="table align-middle">
+    <table class="table align-middle table-borderless">
       <!-- connections -->
-      <tr id="connections" class="p-1">
-        <td class="m-0 text-secondary">Connections</td>
+      <tr id="connections" class="p-1 border-bottom">
+        <td class="m-0 text-light">Connections</td>
         <td>
-          <ul class="list-unstyled m-0">
+          <ul class="list-unstyled m-0 text-light">
             <li class="d-flex justify-content-between align-items-center">
               <div>LinkedIn</div>
               <div
@@ -60,6 +60,7 @@
                 <a
                   href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
                   target="_blank"
+                  class="text-success"
                   >Request new connections</a
                 >
               </div>
@@ -68,10 +69,10 @@
         </td>
       </tr>
       <!-- jobs -->
-      <tr id="jobs" class="p-1">
-        <td class="m-0 text-secondary">Jobs</td>
+      <tr id="jobs" class="p-1 border-bottom">
+        <td class="m-0 text-light">Jobs</td>
         <td>
-          <form id="jobsForm">
+          <form id="jobsForm" class="d-flex flex-column align-items-end">
             <select name="jobName" required class="form-select">
               <!-- <option value="">Choose your job</option> -->
             </select>
@@ -85,7 +86,7 @@
             <input
               type="submit"
               name="submitBtn"
-              class="btn btn-sm btn-primary mt-1"
+              class="btn btn-success mt-1"
               value="Run"
             />
 
@@ -97,16 +98,17 @@
       </tr>
 
       <!-- Admin -->
-      <tr id="admin" class="p-1">
-        <td class="m-0 text-secondary">Administration</td>
+      <tr id="admin" class="p-1 border-0">
+        <td class="m-0 text-light">Administration</td>
         <td>
           <ul class="list-unstyled m-0">
             <!-- <li class="d-flex justify-content-between align-items-center"> -->
-            <div><a href="option.html">Options</a></div>
+            <div><a href="option.html" class="text-success">Options</a></div>
             <div>
               <a
                 href="https://github.com/jupyter-naas/naas-chrome-extension"
                 target="_blank"
+                class="text-success"
                 >Developer's Page</a
               >
             </div>
@@ -114,13 +116,15 @@
               <a
                 href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
                 target="_blank"
+                class="text-success"
                 >Report issue</a
               >
             </div>
             <div>
               <a
-                href="https://github.com/jupyter-naas/naas-chrome-extension"
+                href="https://github.com/sponsors/jupyter-naas"
                 target="_blank"
+                class="text-success"
                 >Sponsor us</a
               >
             </div>

@@ -25,7 +25,9 @@ payloadForm.onsubmit = (e) => {
   e.preventDefault();
 
   try {
-    let payload = JSON.parse(payloadForm.payload.value);
+    if (payloadForm.payload.value.trim() != "") {
+      let payload = JSON.parse(payloadForm.payload.value);
+    }
 
     chrome.storage.local.set({ jobsPayload: payloadForm.payload.value }, () => {
       addNotification("Saved successfully!");

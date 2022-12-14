@@ -1,0 +1,21 @@
+body {
+  background: #181a1c !important;
+  color: #fff !important;
+}
+
+.text-success {
+  color: #47dd82 !important;
+}
+
+.btn-success {
+  background: #47dd82 !important;
+  color: #000 !important;
+}
+.btn-success:hover {
+  background: #47dd82 !important;
+  color: #fff !important;
+}
+
+.bg-success {
+  background: #47dd82 !important;
+}/*# sourceMappingURL=style.css.map */

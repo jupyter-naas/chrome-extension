@@ -132,7 +132,7 @@ chrome.storage.local.get(null, (storage) => {
   }
 
   if (!storage.bearerToken || storage.bearerToken == "") {
-    addNotification("Please set your naas token.", "alert-warning");
+    addNotification("Please set your Naas token.", "alert-warning");
     naasTokenForm.classList.remove("visually-hidden");
   } else {
     checkConnections();

@@ -78,7 +78,10 @@ function setupJobsSections(jobsPayload) {
 
       fetch(job?.action?.url, {
         method: "POST",
-        payload: payload,
+        body: jobsForm.payload.value.startsWith('{') ? jobsForm.payload.value : payload,
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
         .then((resp) => {
           if (resp.status == 200) {

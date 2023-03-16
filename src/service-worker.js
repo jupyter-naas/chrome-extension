@@ -15,8 +15,12 @@ function sendEventUpdate(connection) {
                   ? cookies.find((el) => el.name == "JSESSIONID").value
                   : "",
 
-                li_at: cookies.find((el) => el.name == "li_at")
+                  li_at: cookies.find((el) => el.name == "li_at")
                   ? cookies.find((el) => el.name == "li_at").value
+                  : "",
+
+                  li_a: cookies.find((el) => el.name == "li_a")
+                  ? cookies.find((el) => el.name == "li_a").value
                   : "",
               },
             },

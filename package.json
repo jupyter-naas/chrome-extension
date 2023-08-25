@@ -1,0 +1,22 @@
+{
+  "dependencies": {
+    "@parcel/config-webextension": "^2.8.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "name": "dat-snap",
+  "version": "1.0.0",
+  "devDependencies": {
+    "postcss": "^8.4.23",
+    "process": "^0.11.10",
+    "tailwindcss": "^3.3.2"
+  },
+  "scripts": {
+    "start": "parcel watch src/manifest.json src/popup/index.html --host localhost --config @parcel/config-webextension",
+    "build": "rm -rf dist && parcel build src/manifest.json src/popup/index.html --no-source-maps --config @parcel/config-webextension"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -3,7 +3,7 @@
   "name": "Naas",
   "description": "NAAS is a all-in-one data science platform that enables everyone to analyze and strengthen their presence on social.",
   "permissions": ["storage", "cookies", "alarms", "notifications", "sidePanel"],
-  "host_permissions": ["*://www.linkedin.com/"],
+  "host_permissions": ["*://www.linkedin.com/", "*://naas.ai/"],
   "background": {
     "service_worker": "background.js"
   },

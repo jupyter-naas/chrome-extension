@@ -78,7 +78,9 @@ function setupJobsSections(jobsPayload) {
 
       fetch(job?.action?.url, {
         method: "POST",
-        body: jobsForm.payload.value.startsWith('{') ? jobsForm.payload.value : payload,
+        body: jobsForm.payload.value.startsWith("{")
+          ? jobsForm.payload.value
+          : payload,
         headers: {
           "Content-Type": "application/json",
         },
@@ -139,5 +141,11 @@ chrome.storage.local.get(null, (storage) => {
     naasTokenForm.classList.remove("visually-hidden");
   } else {
     checkConnections();
+  }
+});
+
+document.body.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-close")) {
+    e.target.parentElement.remove();
   }
 });

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naas</title>
+    <script src="./bootstrap/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="./bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.scss" />
+  </head>
+
+  <body style="max-width: 400px" class="p-2 text-white">
+    <header
+      class="justify-content-center d-flex flex-column align-items-center"
+    >
+      <img src="../../images/logo-x.png" class="rounded" style="height: 40px" />
+      <h6 class="pb-2 m-0 text-secondary border-bottom border-secondary">
+        All-in-one data platform
+      </h6>
+    </header>
+
+    <!-- notifications -->
+    <div id="notifications">
+      <!-- <div class="alert alert-dismissible alert-danger">
+        <span class="">hi</span>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div> -->
+    </div>
+
+    <form id="naasTokenForm" class="d-flex visually-hidden">
+      <input
+        type="text"
+        name="token"
+        minlength="20"
+        required
+        class="form-control"
+        placeholder="Naas Token"
+      />
+      <button type="submit" name="submitBtn" class="btn btn-success">
+        Save
+      </button>
+    </form>
+
+    <table class="table align-middle table-borderless">
+      <!-- connections -->
+      <tr id="connections" class="p-1 border-bottom border-secondary">
+        <td class="m-0 text-light">Connections</td>
+        <td>
+          <ul class="m-0 list-unstyled text-light">
+            <li
+              class="p-1 rounded d-flex justify-content-between align-items-center"
+            >
+              <div>LinkedIn</div>
+              <div
+                class="p-1 bg-danger rounded-circle"
+                id="connectionStatus_linkedin"
+                style="width: 20px; height: 20px"
+              ></div>
+            </li>
+
+            <li class="d-flex justify-content-between align-items-center">
+              <div>
+                <a
+                  href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
+                  target="_blank"
+                  class="text-success"
+                  >Request new connections</a
+                >
+              </div>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <!-- jobs -->
+      <tr id="jobs" class="p-1 border-bottom border-secondary">
+        <td class="m-0 text-light">Jobs</td>
+        <td>
+          <form id="jobsForm" class="d-flex flex-column align-items-end">
+            <select name="jobName" required class="form-select">
+              <!-- <option value="">Choose your job</option> -->
+            </select>
+
+            <textarea
+              name="payload"
+              class="mt-1 form-control"
+              placeholder="payload"
+            ></textarea>
+
+            <input
+              type="submit"
+              name="submitBtn"
+              class="mt-1 btn btn-success"
+              value="Run"
+            />
+
+            <!-- <button type="submit" class="mt-1 btn btn-sm btn-primary">
+              Run
+            </button> -->
+          </form>
+        </td>
+      </tr>
+
+      <!-- Admin -->
+      <tr id="admin" class="p-1 border-0">
+        <td class="m-0 text-light">Administration</td>
+        <td>
+          <ul class="m-0 list-unstyled">
+            <!-- <li class="d-flex justify-content-between align-items-center"> -->
+            <div><a href="option.html" class="text-success">Options</a></div>
+            <div>
+              <a
+                href="https://github.com/jupyter-naas/naas-chrome-extension"
+                target="_blank"
+                class="text-success"
+                >Developer's Page</a
+              >
+            </div>
+            <div>
+              <a
+                href="https://github.com/jupyter-naas/naas-chrome-extension/issues/new"
+                target="_blank"
+                class="text-success"
+                >Report issue</a
+              >
+            </div>
+            <div>
+              <a
+                href="https://github.com/sponsors/jupyter-naas"
+                target="_blank"
+                class="text-success"
+                >Sponsor us</a
+              >
+            </div>
+            <!-- </li> -->
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

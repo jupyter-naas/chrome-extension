@@ -5,7 +5,8 @@
   "permissions": ["storage", "cookies", "alarms", "notifications", "sidePanel"],
   "host_permissions": ["*://www.linkedin.com/", "*://naas.ai/"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "action": {
     "default_icon": "images/logo.png"

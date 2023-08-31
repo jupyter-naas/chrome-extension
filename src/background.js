@@ -1,5 +1,7 @@
 console.log("background.js");
 
+import logo from "./images/logo.png";
+
 chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
@@ -58,7 +60,7 @@ function sendEventUpdate(connection) {
               })
               .catch((err) => {
                 chrome.notifications.create("login", {
-                  iconUrl: "/images/logo.png",
+                  iconUrl: logo,
                   title: "NAAS",
                   message: "Failed to sent event update.",
                   type: "basic",
@@ -114,7 +116,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         ([cookie]) => {
           if (!cookie) {
             chrome.notifications.create("login", {
-              iconUrl: "/images/logo.png",
+              iconUrl: logo,
               title: "NAAS",
               message: "Please login to linkedIn.",
               type: "basic",

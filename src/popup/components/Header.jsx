@@ -28,7 +28,7 @@ export default function Header(props) {
   }, [props.page]);
   return (
     <header className="border-b border-[#747677]">
-      <nav className="flex items-center gap-4 px-2">
+      <nav className="flex items-center gap-4 px-3 select-none">
         <NavItem
           page="search"
           currentPage={currentPage}

@@ -36,3 +36,9 @@ payloadForm.onsubmit = (e) => {
     addNotification(err, "alert-danger");
   }
 };
+
+document.body.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btn-close")) {
+    e.target.parentElement.remove();
+  }
+});

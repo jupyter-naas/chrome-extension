@@ -1,6 +1,6 @@
 {
   "version": "2.1",
-  "name": "Naas: Your AI Assistant for Analytics and Automation",
+  "name": "Naas: AI Assistant for Analytics & Automation",
   "description": "Supercharge productivity with Naas Chrome Extension, your AI assistant for seamless analytics and automation.",
   "permissions": ["storage", "cookies", "alarms", "notifications", "sidePanel"],
   "host_permissions": ["*://www.linkedin.com/", "*://naas.ai/"],

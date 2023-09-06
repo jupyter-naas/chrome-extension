@@ -1,7 +1,7 @@
 {
-  "version": "2.0",
-  "name": "Naas",
-  "description": "NAAS is a all-in-one data science platform that enables everyone to analyze and strengthen their presence on social.",
+  "version": "2.1",
+  "name": "Naas: AI Assistant for Analytics & Automation",
+  "description": "Supercharge productivity with Naas Chrome Extension, your AI assistant for seamless analytics and automation.",
   "permissions": ["storage", "cookies", "alarms", "notifications", "sidePanel"],
   "host_permissions": ["*://www.linkedin.com/", "*://naas.ai/"],
   "background": {

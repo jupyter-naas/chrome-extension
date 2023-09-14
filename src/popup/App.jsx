@@ -6,7 +6,7 @@ import Chat from "./pages/Chat";
 import Dashboard from "./pages/Dashboard";
 
 export default function App() {
-  const [page, setPage] = React.useState("search");
+  const [page, setPage] = React.useState("chat");
 
   React.useEffect(() => {
     chrome.storage.local.get(["page"], (result) => {

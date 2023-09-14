@@ -30,19 +30,21 @@ export default function Header(props) {
     <header className="border-b border-[#747677]">
       <nav className="flex items-center gap-4 px-3 select-none">
         <NavItem
-          page="search"
-          currentPage={currentPage}
-          setPage={handlePageChange}
-        >
-          Search
-        </NavItem>
-        <NavItem
           page="chat"
           currentPage={currentPage}
           setPage={handlePageChange}
         >
           Chat
         </NavItem>
+
+        <NavItem
+          page="search"
+          currentPage={currentPage}
+          setPage={handlePageChange}
+        >
+          Search
+        </NavItem>
+
         <NavItem
           page="dashboard"
           currentPage={currentPage}

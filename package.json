@@ -4,7 +4,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "name": "dat-snap",
+  "name": "naas-extension",
   "version": "1.0.0",
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",

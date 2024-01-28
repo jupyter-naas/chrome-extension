@@ -6,75 +6,48 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-function sendEventUpdate(connection) {
-  switch (connection) {
-    case "linkedin":
-      chrome.cookies.getAll(
-        {
-          domain: ".www.linkedin.com",
-        },
-        (cookies) => {
-          //   console.log(cookies);
-          const payload = [
-            {
-              event_type: "linkedin.cookies",
-              event_content: {
-                jsessionid: cookies.find((el) => el.name == "JSESSIONID")
-                  ? cookies.find((el) => el.name == "JSESSIONID").value
-                  : "",
+async function sendEventUpdate(key, value) {
+  try {
+    const payload = {
+      secret: {
+        name: key,
+        value: value,
+      },
+    };
 
-                li_at: cookies.find((el) => el.name == "li_at")
-                  ? cookies.find((el) => el.name == "li_at").value
-                  : "",
+    const { bearerToken } = await chrome.storage.local.get("bearerToken");
+    if (!bearerToken) {
+      throw "bearerToken not found.";
+    }
 
-                li_a: cookies.find((el) => el.name == "li_a")
-                  ? cookies.find((el) => el.name == "li_a").value
-                  : "",
-              },
-            },
-          ];
+    let res = await fetch("https://api.naas.ai/secret/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-          //   return console.log(payload);
+    if (res.status == 401) {
+      chrome.storage.local.remove("bearerToken");
+      chrome.storage.local.remove("access_token");
+      throw "Unauthorized.";
+    }
 
-          chrome.storage.local.get("bearerToken", (storage) => {
-            if (!storage.bearerToken || storage.bearerToken == "") {
-              return console.log("bearerToken not found.");
-            }
+    if (res.status != 200 && res.status != 201) {
+      throw "Failed to sent event update.";
+    }
 
-            fetch("https://events.naas.ai/events", {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer " + storage.bearerToken,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-              redirect: "follow",
-            })
-              .then((resp) => {
-                resp.json().then((result) => {
-                  console.log("event sent", result);
-                  if (!result.entries) {
-                    throw "err";
-                  }
-                });
-              })
-              .catch((err) => {
-                chrome.notifications.create("login", {
-                  iconUrl: logo,
-                  title: "NAAS",
-                  message: "Failed to sent event update.",
-                  type: "basic",
-                });
-                console.log(err);
-              });
-          });
-        }
-      );
-      break;
-
-    default:
-      console.log("invalid connection", connection);
-      break;
+    console.log("Event update sent.");
+  } catch (error) {
+    chrome.notifications.create("login", {
+      iconUrl: logo,
+      title: "NAAS",
+      message: "Failed to sent event update.",
+      type: "basic",
+    });
+    console.log(error);
   }
 }
 
@@ -86,22 +59,42 @@ function openTab(options) {
   });
 }
 
-function updateBadge(text, color) {
-  chrome.action.setBadgeText({ text });
-  chrome.action.setBadgeBackgroundColor({ color });
+async function getBearerToken(token) {
+  try {
+    let res = await fetch(
+      `https://auth.naas.ai/bearer/workspace/longlived?token=${token}`
+    );
+
+    let { access_token } = await res.json();
+    chrome.storage.local.set({ bearerToken: access_token });
+    console.log("Login successful.", access_token);
+  } catch (error) {
+    console.log(error);
+  }
 }
+
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+    if (key == "access_token" && newValue) {
+      getBearerToken(newValue);
+    }
+  }
+});
 
 // when cookies change
 chrome.cookies.onChanged.addListener(async (obj) => {
-  //   console.log(obj);
+  if (obj.cookie.domain == ".www.linkedin.com" && !obj.removed) {
+    switch (obj.cookie.name) {
+      case "JSESSIONID":
+        sendEventUpdate("JSESSIONID", obj.cookie.value);
+        break;
+      case "li_at":
+        sendEventUpdate("li_at", obj.cookie.value);
+        break;
 
-  if (
-    obj.cookie.domain == ".www.linkedin.com" &&
-    obj.cookie.name == "JSESSIONID" &&
-    !obj.removed
-  ) {
-    // send event update
-    sendEventUpdate("linkedin");
+      default:
+        break;
+    }
   }
 });
 
@@ -141,6 +134,10 @@ chrome.notifications.onClicked.addListener((notificationId) => {
 
 chrome.runtime.onInstalled.addListener(async function (details) {
   if (details.reason == "install") {
+    openTab({
+      url: "https://naas.ai",
+    });
+
     chrome.alarms.create("checkLoginStatus", {
       delayInMinutes: 1,
       periodInMinutes: 60,

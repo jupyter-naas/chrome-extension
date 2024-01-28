@@ -31,3 +31,5 @@ const getToken = () => {
     }
   });
 };
+
+getToken();

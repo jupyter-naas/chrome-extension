@@ -7,7 +7,7 @@ export default function Dashboard() {
     <>
       <iframe
         onLoad={() => setIframeLoaded(true)}
-        src="https://naas.ai/account/dashboard"
+        src="https://naas.ai/"
         className="flex-1 border-none"
       ></iframe>
       {!iframeLoaded && <Loader />}
